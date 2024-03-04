@@ -1,0 +1,64 @@
+---
+kind: StorageClass
+apiVersion: storage.k8s.io/v1
+metadata:
+  name: data
+provisioner: kubernetes.io/no-provisioner
+volumeBindingMode: WaitForFirstConsumer
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iceberg-warehouse
+  namespace: spark
+spec:
+  storageClassName: data
+  capacity:
+    storage: 500Mi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /data/iceberg-warehouse
+---
+apiVersion: v1
+kind: PersistentVolume
+metadata:
+  name: iceberg-notebooks
+  namespace: spark
+spec:
+  storageClassName: data
+  capacity:
+    storage: 500Mi
+  accessModes:
+  - ReadWriteOnce
+  hostPath:
+    path: /data/iceberg-notebooks
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iceberg-warehouse
+  namespace: spark
+  finalizers: null # Only on lab environment
+spec:
+  storageClassName: "data"
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500m
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: iceberg-notebooks
+  namespace: spark
+  finalizers: null # Only on lab environment
+spec:
+  storageClassName: "data"
+  accessModes:
+  - ReadWriteOnce
+  resources:
+    requests:
+      storage: 500m
+---

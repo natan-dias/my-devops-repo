@@ -1,0 +1,75 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: iceberg-spark
+  namespace: spark
+  labels:
+    service: iceberk-spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: iceberk-spark
+  template:
+    metadata:
+      labels:
+        service: iceberk-spark
+    spec:
+      containers:
+      - name: iceberg-spark
+        image: tabulario/spark-iceberg:latest
+        ports:
+        - containerPort: 8888
+        - containerPort: 8080
+        - containerPort: 10000
+        - containerPort: 10001
+        volumeMounts:
+          - name: iceberg-warehouse
+            mountPath: /home/iceberg/warehouse
+          - name: iceberg-notebooks
+            mountPath: /home/iceberg/notebooks/notebooks
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: admin
+        - name: AWS_SECRET_ACCESS_KEY
+          value: password
+        - name: AWS_REGION
+          value: us-east-1
+      volumes:
+        - name: iceberg-warehouse
+          persistentVolumeClaim:
+            claimName: iceberg-warehouse
+        - name: iceberg-notebooks
+          persistentVolumeClaim:
+            claimName: iceberg-notebooks
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: spark-iceberg-svc
+  namespace: spark
+spec:
+  type: NodePort
+  selector:
+    service: iceberg-spark
+  ports:
+    - name: spark-port
+      protocol: TCP
+      port: 8888
+      targetPort: 8888
+      nodePort: 30888
+    - name: spark-port-2
+      protocol: TCP
+      port: 8080
+      targetPort: 8080
+      nodePort: 30080
+    - name: spark-port-3
+      protocol: TCP
+      port: 10000
+      targetPort: 10000
+      nodePort: 31000
+    - name: spark-port-4
+      protocol: TCP
+      port: 10001
+      targetPort: 10001
+      nodePort: 31001
