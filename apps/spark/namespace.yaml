@@ -1,6 +1,6 @@
 kind: Namespace
 apiVersion: v1
 metadata:
-  name: jenkins
+  name: spark
   labels:
-    name: jenkins
+    name: spark
