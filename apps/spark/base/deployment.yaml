@@ -4,16 +4,16 @@ metadata:
   name: iceberg-spark
   namespace: spark
   labels:
-    service: iceberk-spark
+    service: iceberg-spark
 spec:
   replicas: 1
   selector:
     matchLabels:
-      service: iceberk-spark
+      service: iceberg-spark
   template:
     metadata:
       labels:
-        service: iceberk-spark
+        service: iceberg-spark
     spec:
       containers:
       - name: iceberg-spark
@@ -49,7 +49,7 @@ metadata:
   name: spark-iceberg-svc
   namespace: spark
 spec:
-  type: NodePort
+  type: ClusterIP
   selector:
     service: iceberg-spark
   ports:
@@ -57,19 +57,15 @@ spec:
       protocol: TCP
       port: 8888
       targetPort: 8888
-      nodePort: 30888
     - name: spark-port-2
       protocol: TCP
       port: 8080
       targetPort: 8080
-      nodePort: 30080
     - name: spark-port-3
       protocol: TCP
       port: 10000
       targetPort: 10000
-      nodePort: 31000
     - name: spark-port-4
       protocol: TCP
       port: 10001
       targetPort: 10001
-      nodePort: 31001
