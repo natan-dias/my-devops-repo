@@ -23,24 +23,24 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    def dockerFolder = 'apps' // Specify the root folder to search for Dockerfiles
+                    def dockerFolder = 'apps' // Relative path within the workspace where Dockerfiles are located
 
                     def findDockerfiles = { dir ->
                         dir.eachDirRecurse { subDir ->
                             def dockerfile = new File(subDir, 'Dockerfile')
                             if (dockerfile.exists()) {
-                                def folderPath = subDir.toString()
-                                def hasChanges = sh(script: "git diff --quiet HEAD~1 ${folderPath}/Dockerfile || echo 'true'", returnStatus: true)
+                                def folderPath = subDir.toString().replace(env.WORKSPACE + '/', '')
+                                def hasChanges = sh(script: "git diff --quiet HEAD~1 ${subDir}/Dockerfile || echo 'true'", returnStatus: true)
 
                                 if (hasChanges == 0) {
                                     echo "Building Docker image from ${folderPath}"
-                                    sh "docker build -t my-image:${folderPath} ${folderPath}"
+                                    sh "docker build -t my-image:${folderPath} ${subDir}"
                                 }
                             }
                         }
                     }
 
-                    findDockerfiles(new File(dockerFolder))
+                    findDockerfiles(new File(env.WORKSPACE, dockerFolder))
                 }
             }
         }
