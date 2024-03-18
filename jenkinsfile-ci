@@ -23,12 +23,13 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    def dockerFolder = 'apps' // Specify the root folder to search for Dockerfiles
+                    def dockerFolder = 'path/to/your/docker/folder' // Specify the root folder to search for Dockerfiles
 
                     def findDockerfiles = { dir ->
-                        dir.traverse(type: FileVisitType.FILES) { file ->
-                            if (file.name == 'Dockerfile') {
-                                def folderPath = file.parent
+                        dir.eachDirRecurse { subDir ->
+                            def dockerfile = new File(subDir, 'Dockerfile')
+                            if (dockerfile.exists()) {
+                                def folderPath = subDir.toString()
                                 def hasChanges = sh(script: "git diff --quiet HEAD~1 ${folderPath}/Dockerfile || echo 'true'", returnStatus: true)
 
                                 if (hasChanges == 0) {
@@ -39,7 +40,7 @@ pipeline {
                         }
                     }
 
-                    findDockerfiles(workspace)
+                    findDockerfiles(new File(dockerFolder))
                 }
             }
         }
