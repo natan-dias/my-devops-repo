@@ -1,7 +1,7 @@
 environment {
     // Set the environment variable based on the branch name
     // Still need to work on that
-    if env.BRANCH_NAME == 'main' {
+    if (env.BRANCH_NAME == 'main') {
         env.ENV_NAME = 'prod'
     }
     else {
