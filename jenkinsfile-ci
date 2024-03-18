@@ -23,7 +23,7 @@ pipeline {
         stage('Build Docker Images') {
             steps {
                 script {
-                    def dockerFolder = 'path/to/your/docker/folder' // Specify the root folder to search for Dockerfiles
+                    def dockerFolder = 'apps' // Specify the root folder to search for Dockerfiles
 
                     def findDockerfiles = { dir ->
                         dir.eachDirRecurse { subDir ->
