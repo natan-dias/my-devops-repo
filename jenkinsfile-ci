@@ -1,5 +1,4 @@
-pipeline {
-    environment {
+environment {
     // Set the environment variable based on the branch name
     // Still need to work on that
     if env.BRANCH_NAME == 'main' {
@@ -10,6 +9,8 @@ pipeline {
     }
     env.REPO = 'my-devops-repo'
     }
+
+pipeline {
 
     // Set agent if necessary
     agent any
