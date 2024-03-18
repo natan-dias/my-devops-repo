@@ -39,7 +39,7 @@ pipeline {
                         }
                     }
 
-                    findDockerfiles(new File(dockerFolder))
+                    findDockerfiles(workspace)
                 }
             }
         }
