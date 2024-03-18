@@ -1,0 +1,58 @@
+pipeline {
+    environment {
+    // Set the environment variable based on the branch name
+    // Still need to work on that
+    if env.BRANCH_NAME == 'main' {
+        env.ENV_NAME = 'prod'
+    }
+    else {
+        env.ENV_NAME = 'dev'
+    }
+    env.REPO = 'my-devops-repo'
+    }
+
+    // Set agent if necessary
+    agent any
+
+    parameters {
+        string(name: 'dockerFolder', defaultValue: '/apps', description: 'Change Dockerfiles folder path')
+    }
+
+    stages {
+        stage('Build Docker Images') {
+            §steps {
+                script {
+                    def dockerFolder = '/apps' // Specify the root folder to search for Dockerfiles
+
+                    def findDockerfiles = { dir ->
+                        dir.traverse(type: FileVisitType.FILES) { file ->
+                            if (file.name == 'Dockerfile') {
+                                def folderPath = file.parent
+                                def hasChanges = sh(script: "git diff --quiet HEAD~1 ${folderPath}/Dockerfile || echo 'true'", returnStatus: true)
+
+                                if (hasChanges == 0) {
+                                    echo "Building Docker image from ${folderPath}"
+                                    sh "docker build -t my-image:${folderPath} ${folderPath}"
+                                }
+                            }
+                        }
+                    }
+
+                    findDockerfiles(new File(dockerFolder))
+                }
+            }
+        }
+        stage('Remove Old Docker Builds') {
+            steps {
+                script {
+                    sh "docker image prune -f --filter ancestor=my-image:latest" // Specify the name of the Docker image you want to remove old builds for
+                }
+            }
+        }
+        stage('Cleanup Workspace') {
+            steps {
+                sh "rm -rf ${env.WORKSPACE}/*"
+            }
+        }       
+    }
+}
