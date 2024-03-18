@@ -16,14 +16,14 @@ pipeline {
     agent any
 
     parameters {
-        string(name: 'dockerFolder', defaultValue: '/apps', description: 'Change Dockerfiles folder path')
+        string(name: 'dockerFolder', defaultValue: 'apps', description: 'Change Dockerfiles folder path')
     }
 
     stages {
         stage('Build Docker Images') {
             steps {
                 script {
-                    def dockerFolder = '/apps' // Specify the root folder to search for Dockerfiles
+                    def dockerFolder = 'apps' // Specify the root folder to search for Dockerfiles
 
                     def findDockerfiles = { dir ->
                         dir.traverse(type: FileVisitType.FILES) { file ->
