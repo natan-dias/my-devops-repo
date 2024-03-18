@@ -21,7 +21,7 @@ pipeline {
 
     stages {
         stage('Build Docker Images') {
-            §steps {
+            steps {
                 script {
                     def dockerFolder = '/apps' // Specify the root folder to search for Dockerfiles
 
