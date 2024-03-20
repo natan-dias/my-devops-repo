@@ -14,9 +14,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3.5.2
 
-      - name: Set base branch
-        id: base_branch
-        run: echo "::set-output name=base::$(git merge-base HEAD ${{ github.event.before }})"
+      #- name: Set base branch
+      #  id: base_branch
+      #  run: echo "::set-output name=base::$(git merge-base HEAD ${{ github.event.before }})"
+
+      - name: Add origin remote
+        id: main-remote
+        run: git rev-list --count origin/main..$(git branch --show-current)
 
       - name: Check Dockerfile changes
         id: check
