@@ -90,5 +90,6 @@ jobs:
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
           push: ${{ github.event_name == 'pull_request' }}
+        with:
           dockerfile: |
             $(cat dockerfile_changes.txt | xargs -I{} sh -c "dirname {}")
