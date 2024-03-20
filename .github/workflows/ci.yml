@@ -34,7 +34,7 @@ jobs:
     if: ${{ needs.check-dockerfile-changes.outputs.changed }} == true
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
-      FOLDER:
+      #FOLDER:
       SUBFOLDER: 
     steps:
       - name: Checkout repo
@@ -46,11 +46,11 @@ jobs:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Set folder name
-        id: set-folder
-        run: |
-          FOLDER=$(dirname $line)
-          echo "FOLDER=$FOLDER" >> $GITHUB_ENV
+      #- name: Set folder name
+      #  id: set-folder
+      #  run: |
+      #    FOLDER=$(dirname $line)
+      #    echo "FOLDER=$FOLDER" >> $GITHUB_ENV
       
       - name: Set subfolder name
         id: set-subfolder
