@@ -53,7 +53,7 @@ jobs:
       - name: Set subfolder name
         id: set-subfolder
         run: |
-          SUBFOLDER=$(dirname $(find . -name Dockerfile))
+          env.SUBFOLDER=$(dirname $(find . -name Dockerfile))
       
       - name: Docker Metadata action
         id: meta
