@@ -89,8 +89,6 @@ jobs:
           context: .
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          push: true
-        if: ${{ github.event_name == 'pull_request' }}
-        with:
-          dockerfile: |
+          push: ${{ github.event_name == 'pull_request' }}
+          file: |
             $(cat dockerfile_changes.txt | xargs -I{} sh -c "dirname {}")
