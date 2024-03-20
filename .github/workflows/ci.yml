@@ -20,7 +20,7 @@ jobs:
 
       - name: Add origin remote
         id: main-remote
-        run: git fetch origin master:refs/remotes/origin/master
+        run: git fetch origin main:refs/remotes/origin/main
 
       - name: Check Dockerfile changes
         id: check
