@@ -56,7 +56,7 @@ jobs:
         run: |
           FOLDER=$(dirname $(find . -name Dockerfile))
           SUBFOLDER=$(dirname $(find . -name Dockerfile)) | xargs basename
-          ECHO "FOLDER=$FOLDER" >> $GITHUB_ENV
+          echo "FOLDER=$FOLDER" >> $GITHUB_ENV
           echo "SUBFOLDER=$SUBFOLDER" >> $GITHUB_ENV
       
       - name: Docker Metadata action
