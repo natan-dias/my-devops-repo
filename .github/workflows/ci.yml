@@ -39,7 +39,7 @@ jobs:
     needs: check-dockerfile-changes
     name: Push Docker image to Docker HUB
     runs-on: ubuntu-latest
-    if: ${{ needs.check-dockerfile-changes.outputs.changed == 'true' }}
+    if: ${{ needs.check-dockerfile-changes.outputs.changed }} == true
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
     steps:
