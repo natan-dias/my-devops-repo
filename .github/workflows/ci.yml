@@ -39,6 +39,7 @@ jobs:
     if: ${{ needs.check-dockerfile-changes.outputs.changed }} == true
     env:
       REPO: ${{ secrets.DOCKER_REPO }}
+      SUBFOLDER: 
     steps:
       - name: Checkout repo
         uses: actions/checkout@v3.5.2   
@@ -52,7 +53,7 @@ jobs:
       - name: Set subfolder name
         id: set-subfolder
         run: |
-          echo "$(dirname $(find . -name Dockerfile))" >> $GITHUB_ENV
+          SUBFOLDER=$(dirname $(find . -name Dockerfile))
       
       - name: Docker Metadata action
         id: meta
