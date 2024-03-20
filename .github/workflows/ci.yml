@@ -16,24 +16,21 @@ jobs:
         with:
           fetch-depth: 0
 
-      #- name: Set base branch
-      #  id: base_branch
-      #  run: echo "::set-output name=base::$(git merge-base HEAD ${{ github.event.before }})"
+      #- name: Add origin remote
+      #  id: main-remote
+      #  run: git fetch origin main:refs/remotes/origin/main
 
-      - name: Add origin remote
-        id: main-remote
-        run: git fetch origin main:refs/remotes/origin/main
-
-      - name: Add origin new
-        id: main-new
-        run: git rev-list --count origin/main..$(git branch --show-current)
+      #- name: Add origin new
+      #  id: main-new
+      #  run: git rev-list --count origin/main..$(git branch --show-current)
 
       - name: Check Dockerfile changes
         id: check
         run: echo "::set-output name=changed::$(if git diff --name-only remotes/origin/${{ github.base_ref }}..remotes/origin/${{ github.head_ref }} | grep -q 'Dockerfile'; then echo true; else echo false; fi)"
 
-      - name: Debug changed value
-        run: echo ${{ steps.check.outputs.changed }}
+      # Uncomment if you need to DEBUG
+      #- name: Debug changed value
+      #  run: echo ${{ steps.check.outputs.changed }}
 
   build-and-push-to-registry:
     needs: check-dockerfile-changes
@@ -53,7 +50,9 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
       
       - name: Set subfolder name
-        run: echo "::set-env name=SUBFOLDER::$(dirname $(find . -name Dockerfile))"
+        id: set-subfolder
+        run: |
+          echo "$(dirname $(find . -name Dockerfile))" >> $GITHUB_ENV
       
       - name: Docker Metadata action
         id: meta
