@@ -20,7 +20,7 @@ jobs:
 
       - name: Check Dockerfile changes
         id: check
-        run: echo "::set-output name=changed::$(if git diff --name-only ${{ steps.base_branch.outputs.base }} ${{ github.sha }} | grep -q 'Dockerfile'; then echo true; else echo false; fi)"
+        run: echo "::set-output name=changed::$(if git diff --name-only remotes/origin/${{ github.base_ref }}..remotes/origin/${{ github.head_ref }} | grep -q 'Dockerfile'; then echo true; else echo false; fi)"
 
   build-and-push-to-registry:
     needs: check-dockerfile-changes
