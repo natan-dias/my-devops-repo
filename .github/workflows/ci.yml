@@ -53,7 +53,8 @@ jobs:
       - name: Set subfolder name
         id: set-subfolder
         run: |
-          env.SUBFOLDER=$(dirname $(find . -name Dockerfile))
+          SUBFOLDER=$(dirname $(find . -name Dockerfile))
+          echo "SUBFOLDER=$SUBFOLDER" >> $GITHUB_ENV
       
       - name: Docker Metadata action
         id: meta
