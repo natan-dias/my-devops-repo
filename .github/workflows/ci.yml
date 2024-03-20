@@ -19,7 +19,7 @@ jobs:
       - name: Check Dockerfile changes
         id: check
         run: |
-          PR_FILES=$(git diff --name-only main...feature-new-test | grep 'Dockerfile')
+          PR_FILES=$(git diff --name-only remotes/origin/${{ github.base_ref }}..remotes/origin/${{ github.head_ref }} | grep 'Dockerfile')
           echo "$PR_FILES" > dockerfile_changes.txt
           echo "::set-output name=changed::$(if [ -s dockerfile_changes.txt ]; then echo true; else echo false; fi)"
 
