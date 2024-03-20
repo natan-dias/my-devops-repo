@@ -14,13 +14,13 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v3.5.2
 
-      - name: Set base branch
-        id: base_branch
-        run: echo "::set-output name=base::$(git merge-base HEAD ${{ github.event.before }})"
+      #- name: Set base branch
+      #  id: base_branch
+      #  run: echo "::set-output name=base::$(git merge-base HEAD ${{ github.event.before }})"
 
       - name: Check Dockerfile changes
         id: check
-        run: echo "::set-output name=changed::$(if git diff --name-only ${{ github.event.before }} ${{ github.sha }} | grep -q 'Dockerfile'; then echo true; else echo false; fi)"
+        run: echo "::set-output name=changed::$(if git diff --name-only $GITHUB_SHA $GITHUB_SHA^ | grep -q 'Dockerfile'; then echo true; else echo false; fi)"
 
   build-and-push-to-registry:
     needs: check-dockerfile-changes
