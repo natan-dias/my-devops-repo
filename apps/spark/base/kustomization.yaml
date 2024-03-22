@@ -1,7 +1,4 @@
 namespace: spark
 resources:
   - storage.yaml
-  - deployment.yaml
-  - minio.yaml
-  - minio-mc.yaml
-  - spark-rest.yaml
+  - service.yaml

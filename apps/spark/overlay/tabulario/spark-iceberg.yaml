@@ -1,0 +1,44 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark
+  namespace: spark
+  labels:
+    service: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: spark
+  template:
+    metadata:
+      labels:
+        service: spark
+    spec:
+      containers:
+      - name: spark-iceberg
+        image: tabulario/spark-iceberg:latest
+        ports:
+        - containerPort: 8888
+        - containerPort: 8080
+        - containerPort: 10000
+        - containerPort: 10001
+        volumeMounts:
+          - name: spark-warehouse
+            mountPath: /home/iceberg/warehouse
+          - name: spark-notebooks
+            mountPath: /home/iceberg/notebooks/notebooks
+        env:
+        - name: AWS_ACCESS_KEY_ID
+          value: admin
+        - name: AWS_SECRET_ACCESS_KEY
+          value: password
+        - name: AWS_REGION
+          value: us-east-1
+      volumes:
+        - name: spark-warehouse
+          persistentVolumeClaim:
+            claimName: spark-warehouse
+        - name: spark-notebooks
+          persistentVolumeClaim:
+            claimName: spark-notebooks

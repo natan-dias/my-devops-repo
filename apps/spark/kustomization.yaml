@@ -1,6 +1,0 @@
-namespace: spark
-resources:
-  - ./base
-  - ingress.yaml
-  - namespace.yaml
-
