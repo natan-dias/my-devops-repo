@@ -24,12 +24,6 @@ jobs:
       #- name: Debug changed value
       #  run: echo ${{ steps.check.outputs.changed }}
 
-      - name: Upload docker_changes.txt as an artifact
-        uses: actions/upload-artifact@v2
-        with:
-          name: dockerfile-changes
-          path: dockerfile_changes.txt
-
   build-and-push-to-registry:
     needs: check-dockerfile-changes
     name: Push Docker image to Docker HUB
