@@ -1,0 +1,48 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-node
+  namespace: spark
+  labels:
+    service: spark-node
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: spark-node
+  template:
+    metadata:
+      labels:
+        service: spark-node
+    spec:
+      containers:
+      - name: spark-node
+        image: natandias1/spark-base:1.0.8
+        ports:
+        - containerPort: 7000
+        - containerPort: 8080
+        volumeMounts:
+          - name: spark-apps
+            mountPath: /opt/spark-apps
+          - name: spark-data
+            mountPath: /opt/spark-data
+        env:
+        - name: SPARK_MASTER
+          value: spark://spark-main:7077
+        - name: SPARK_WORKLOAD
+          value: worker
+        - name: SPARK_WORKER_CORES
+          value: '1'
+        - name: SPARK_WORKER_MEMORY
+          value: 1G
+        - name: SPARK_DRIVER_MEMORY
+          value: 1G
+        - name: SPARK_EXECUTOR_MEMORY
+          value: 1G
+      volumes:
+        - name: spark-apps
+          persistentVolumeClaim:
+            claimName: spark-apps
+        - name: spark-data
+          persistentVolumeClaim:
+            claimName: spark-data

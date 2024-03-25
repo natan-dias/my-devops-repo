@@ -15,6 +15,6 @@ spec:
         pathType: Prefix
         backend:
           service:
-            name: spark-iceberg-svc
+            name: spark-svc
             port:
               number: 8888
