@@ -1,0 +1,8 @@
+namespace: spark
+resources:
+  - ../../base
+  - service.yaml
+  - ingress.yaml
+  - spark.yaml
+  - spark-worker.yaml
+  - storage.yaml

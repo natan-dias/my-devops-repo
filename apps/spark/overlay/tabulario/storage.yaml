@@ -51,7 +51,7 @@ spec:
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: spark-notebooks
+  name: iceberg-notebooks
   namespace: spark
   finalizers: null # Only on lab environment
 spec:
