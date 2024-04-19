@@ -34,11 +34,11 @@ spec:
         - name: SPARK_WORKER_CORES
           value: '1'
         - name: SPARK_WORKER_MEMORY
-          value: 1G
+          value: 3G
         - name: SPARK_DRIVER_MEMORY
-          value: 1G
+          value: 3G
         - name: SPARK_EXECUTOR_MEMORY
-          value: 1G
+          value: 3G
       volumes:
         - name: spark-apps
           persistentVolumeClaim:

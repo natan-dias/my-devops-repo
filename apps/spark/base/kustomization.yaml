@@ -1,3 +1,4 @@
 namespace: spark
 resources:
   - namespace.yaml
+  - serviceaccount.yaml
