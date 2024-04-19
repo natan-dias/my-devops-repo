@@ -28,3 +28,11 @@ Just a small script to create fake certificates to use in you ingress, if you wa
 - update-images.sh
 
 I am testing using [Kind](https://kind.sigs.k8s.io/) so you can update images on your kind cluster, if you are testing locally and still didn't push the new images to a registry.
+
+## Quick Tests
+
+In order to test this spark instance, just go to **spark-test** folder and copy the spark submit content. You will need to connect with your worker instance and run spark-submit from there. In this test, a small aplication to display the value of PI runs.
+
+## To do
+
+- Test spark-subimt with K8s API
