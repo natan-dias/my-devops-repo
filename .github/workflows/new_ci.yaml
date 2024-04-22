@@ -8,6 +8,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      AFFECTED_FOLDER:
 
     steps:
     - uses: actions/checkout@v2
@@ -24,7 +26,7 @@ jobs:
       run: |
         PR_BRANCH=$(echo $GITHUB_REF | cut -d"/" -f3)
         AFFECTED_FOLDER=$(git diff --name-only HEAD -- $PR_BRANCH | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
-        echo "::set-env name=AFFECTED_FOLDER::$AFFECTED_FOLDER"
+        echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
 
     - name: Run script to check Dockerfile changes and build Docker image
       run: python /scripts/build_and_push.py $AFFECTED_FOLDER
