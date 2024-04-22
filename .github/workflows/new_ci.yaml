@@ -29,7 +29,7 @@ jobs:
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
 
     - name: Run script to check Dockerfile changes and build Docker image
-      run: python /scripts/build_and_push.py $AFFECTED_FOLDER
+      run: python scripts/build_and_push.py $AFFECTED_FOLDER
 
     - name: Check status
       run: echo "Dockerfile check complete"
