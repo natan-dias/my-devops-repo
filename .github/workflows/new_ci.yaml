@@ -29,7 +29,7 @@ jobs:
     - name: Determine affected folder
       run: |
         PR_BRANCH=$(echo $GITHUB_REF | cut -d"/" -f3)
-        echo "GITHUB_REF: $github.base_ref"
+        echo "GITHUB_REF: $GITHUB.BASE_REF"
         AFFECTED_FOLDER=$(git diff --name-only main -- $PR_BRANCH | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
