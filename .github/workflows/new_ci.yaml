@@ -29,7 +29,7 @@ jobs:
     - name: Determine affected folder
       run: |
         echo "another test: ${{ github.head_ref }}"
-        AFFECTED_FOLDER=$(git diff --name-only main...${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
+        AFFECTED_FOLDER=$(git diff --name-only origin/main..${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
 
