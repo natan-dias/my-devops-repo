@@ -30,6 +30,7 @@ jobs:
       run: |
         git remote update
         git fetch
+        git checkout ${{ github.head_ref }}
         echo "another test: ${{ github.head_ref }}"
         AFFECTED_FOLDER=$(git diff --name-only main..${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
