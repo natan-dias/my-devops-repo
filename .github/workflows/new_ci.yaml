@@ -2,15 +2,13 @@ name: Dockerfile Check CI
 
 on:
   pull_request:
-    paths:
-      - '**/Dockerfile'
+    branches: [ "main" ]
 
 jobs:
   build:
     runs-on: ubuntu-latest
     env:
       AFFECTED_FOLDER:
-      REPO: ${{ secrets.DOCKER_REPO }}
 
     steps:
     - name: Checkout repo
@@ -35,6 +33,7 @@ jobs:
         PR_BRANCH=$(echo $GITHUB_REF | cut -d"/" -f3)
         AFFECTED_FOLDER=$(git diff --name-only HEAD -- $PR_BRANCH | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
+        echo "Affected folders: $AFFECTED_FOLDER"
 
     #- name: Run script to check Dockerfile changes and build Docker image
     #  run: python scripts/build_and_push.py $AFFECTED_FOLDER
@@ -44,7 +43,7 @@ jobs:
       uses: docker/metadata-action@v4.4.0
       with:
         images: |
-          ${{ env.REPO }}/${{ env.AFFECTED_FOLDER}}
+          ${{ env.DOCKER_REPO }}/${{ env.AFFECTED_FOLDER}}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
