@@ -7,8 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      DOCKER_REPO: natandias1
 
     steps:
     - name: Checkout repo
@@ -31,6 +29,7 @@ jobs:
     - name: Determine affected folder
       run: |
         PR_BRANCH=$(echo $GITHUB_REF | cut -d"/" -f3)
+        echo "PR_BRANCH: $PR_BRANCH"
         AFFECTED_FOLDER=$(git diff --name-only HEAD -- $PR_BRANCH | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
@@ -43,7 +42,7 @@ jobs:
       uses: docker/metadata-action@v4.4.0
       with:
         images: |
-          ${{ env.DOCKER_REPO }}/${{ env.AFFECTED_FOLDER}}
+          natandias1/${{ env.AFFECTED_FOLDER}}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
