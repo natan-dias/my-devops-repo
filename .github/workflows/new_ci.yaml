@@ -33,7 +33,6 @@ jobs:
         AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
-        docker system prune -a --volumes -f
 
     #- name: Run script to check Dockerfile changes and build Docker image
     #  run: python scripts/build_and_push.py $AFFECTED_FOLDER
@@ -52,7 +51,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
       with:
-        no-cache: true
+        cache-from: type=gha
         file: ${{ env.AFFECTED_FOLDER }}/Dockerfile
         context: .
         tags: ${{ steps.meta.outputs.tags }}
