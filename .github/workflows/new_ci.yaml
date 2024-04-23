@@ -7,6 +7,8 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    env:
+      REPO: "natandias1"
 
     steps:
     - name: Checkout repo
@@ -45,7 +47,7 @@ jobs:
       uses: docker/metadata-action@v4.4.0
       with:
         images: |
-          natandias1/${{ env.IMAGE_NAME_FOLDER }}
+          ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
