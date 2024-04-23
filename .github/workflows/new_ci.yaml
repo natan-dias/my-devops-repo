@@ -53,7 +53,7 @@ jobs:
 
     - name: Docker Build action
       run: |
-        docker build -t natandias1/${{ env.IMAGE_NAME_FOLDER }}:${{ steps.meta.outputs.tags }} ${{ env.AFFECTED_FOLDER }}/Dockerfile .
+        docker build -t ${{ steps.meta.outputs.tags }} ${{ env.AFFECTED_FOLDER }}/Dockerfile .
     
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
