@@ -40,6 +40,7 @@ jobs:
     - name: Set Repo Name
       run: |
         echo "REPO=natandias1" >> $GITHUB_ENV
+        echo "Repo name: $REPO"
 
     #- name: Run script to check Dockerfile changes and build Docker image
     #  run: python scripts/build_and_push.py $AFFECTED_FOLDER
