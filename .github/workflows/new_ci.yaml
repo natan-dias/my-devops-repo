@@ -31,7 +31,7 @@ jobs:
         git remote update
         git fetch
         AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
-        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | basename "$PWD")
+        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
@@ -45,7 +45,7 @@ jobs:
       uses: docker/metadata-action@v4.4.0
       with:
         images: |
-          natandias1/${{ env.AFFECTED_FOLDER}}
+          natandias1/${{ env.IMAGE_NAME_FOLDER }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
