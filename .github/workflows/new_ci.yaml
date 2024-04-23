@@ -7,8 +7,6 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
-    env:
-      REPO: "natandias1"
 
     steps:
     - name: Checkout repo
@@ -38,6 +36,10 @@ jobs:
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
         echo "Image name folder: $IMAGE_NAME_FOLDER"
+    
+    - name: Set Repo Name
+      run: |
+        echo "REPO=natandias1" >> $GITHUB_ENV
 
     #- name: Run script to check Dockerfile changes and build Docker image
     #  run: python scripts/build_and_push.py $AFFECTED_FOLDER
@@ -46,8 +48,7 @@ jobs:
       id: meta
       uses: docker/metadata-action@v4.4.0
       with:
-        images: |
-          ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
+        images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
