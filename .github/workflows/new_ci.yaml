@@ -54,6 +54,7 @@ jobs:
 
     - name: Docker Build action
       run: |
+        docker system prune -a --volumes -f
         docker build -t ${{ steps.meta.outputs.tags }} -f ${{ env.AFFECTED_FOLDER }}/Dockerfile .
     
     - name: Build and push Docker images
