@@ -7,7 +7,7 @@ on:
     tags: [ "v*" ]
 
 jobs:
-  build on pull request:
+  build-on-pull-request:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
 
@@ -61,7 +61,7 @@ jobs:
     - name: Check status
       run: echo "Dockerfile check complete"
   
-  build and push with release tag:
+  build-and-push-with-release-tag:
     if: ${{ github.event_name != 'pull_request' }}
     runs-on: ubuntu-latest
 
