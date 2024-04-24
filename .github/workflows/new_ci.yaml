@@ -7,7 +7,8 @@ on:
     tags: [ "v*" ]
 
 jobs:
-  build:
+  build on pull request:
+    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
 
     steps:
@@ -44,7 +45,7 @@ jobs:
         tags: |
           type=ref,event=branch
           type=ref,event=pr
-          type=semver,pattern={{major}}.{{minor}}.{{patch}}
+         #type=semver,pattern={{major}}.{{minor}}.{{patch}}
         flavor: |
           latest=false
     
@@ -59,3 +60,49 @@ jobs:
     
     - name: Check status
       run: echo "Dockerfile check complete"
+  
+  build and push with release tag:
+    if: ${{ github.event_name != 'pull_request' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3.5.2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2.1.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Print current envs
+      run: |
+        echo "Affected folders: $AFFECTED_FOLDER"
+        echo "Image name folder: $IMAGE_NAME_FOLDER"
+    
+    - name: Set Repo Name
+      run: |
+        echo "REPO=natandias1" >> $GITHUB_ENV
+        echo "Repo name: $REPO"
+
+    - name: Docker Metadata action
+      id: meta
+      uses: docker/metadata-action@v4.4.0
+      with:
+        images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
+        tags: |
+          type=semver,pattern={{major}}.{{minor}}.{{patch}}
+        flavor: |
+          latest=false
+    
+    - name: Build and push Docker images
+      uses: docker/build-push-action@v5.3.0
+      with:
+        file: ${{ env.AFFECTED_FOLDER }}/Dockerfile
+        context: .
+        tags: ${{ steps.meta.outputs.tags }}
+        labels: ${{ steps.meta.outputs.labels }}
+        push: ${{ github.event_name != 'pull_request' }}
+    
+    - name: Check status
+      run: echo "Dockerfile check complete"  
