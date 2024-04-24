@@ -23,9 +23,11 @@ def build_and_push_image(folder_path):
     image_name = f"natandias1/{folder_name}:latest"
     
     # Build Docker image
+    print("Building Docker image...")
     subprocess.run(["docker", "build", "-t", image_name, folder_path])
     
     # Push Docker image to repository
+    print("Pushing Docker image...")
     subprocess.run(["docker", "push", image_name])
 
 # Main function

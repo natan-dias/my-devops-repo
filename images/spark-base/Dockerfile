@@ -14,6 +14,7 @@ HADOOP_VERSION=3 \
 SPARK_HOME=/opt/spark \
 PYTHONHASHSEED=1
 
+
 # Download and uncompress spark from the apache archive
 RUN wget --no-verbose -O apache-spark.tgz "https://archive.apache.org/dist/spark/spark-${SPARK_VERSION}/spark-${SPARK_VERSION}-bin-hadoop${HADOOP_VERSION}.tgz" \
 && mkdir -p /opt/spark \
@@ -44,6 +45,6 @@ touch $SPARK_WORKER_LOG && \
 ln -sf /dev/stdout $SPARK_MASTER_LOG && \
 ln -sf /dev/stdout $SPARK_WORKER_LOG
 
-COPY start-spark.sh /
+COPY ./images/spark-base/start-spark.sh /
 
 CMD ["/bin/bash", "/start-spark.sh"]
