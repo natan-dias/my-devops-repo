@@ -52,10 +52,9 @@ jobs:
           type=ref,event=pr
           type=semver,pattern={{major}}.{{minor}}.{{patch}}
 
-    - name: Docker Build action
-      run: |
-        docker system prune -a --volumes -f
-        docker build -t ${{ steps.meta.outputs.tags }} -f ${{ env.AFFECTED_FOLDER }}/Dockerfile .
+    #- name: Docker Build action
+    #  run: |
+    #    docker build -t ${{ steps.meta.outputs.tags }} -f ${{ env.AFFECTED_FOLDER }}/Dockerfile .
     
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
