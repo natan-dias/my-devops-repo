@@ -46,9 +46,10 @@ jobs:
         echo "REPO=natandias1" >> $GITHUB_OUTPUT
   
   build-and-push:
-    runs-on: ubuntu-latest
     if: ${{ github.event_name == 'pull_request' && steps.affected-folder.outputs.AFFECTED_FOLDER != '' }}
-
+    runs-on: ubuntu-latest
+    needs: check-dockerfile-changes
+    
     steps:
     - name: Docker Metadata action
       id: meta
