@@ -35,6 +35,7 @@ jobs:
     - name: "Set latest tag"
       id: set-latest-tag
       run: | 
+        git tag
         echo "release_tag=$(git tag | sort --version-sort | tail -n1)" >> $GITHUB_ENV
         echo "Release tag: $release_tag"
         echo "Github tag: ${{ github.ref_name }}"
