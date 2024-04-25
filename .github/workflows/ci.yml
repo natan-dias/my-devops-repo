@@ -6,8 +6,6 @@ on:
       - main
     tags:
       - v*
-    release:
-      types: [published]
     inputs:
       folder: 
         description: 'Dockerfile folder location'
