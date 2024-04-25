@@ -37,7 +37,7 @@ jobs:
     - name: "Set envs"
       id: set-envs
       run: | 
-        echo "IMAGE_NAME_FOLDER=$(${{ github.event.inputs.folder }} | awk -F "/" '{print $NF}' <<< "${{ github.event.inputs.folder }}")" >> $GITHUB_ENV
+        echo "IMAGE_NAME_FOLDER=$("${{ github.event.inputs.folder }}" | awk -F "/" '{print $NF}' <<< "${{ github.event.inputs.folder }}")" >> $GITHUB_ENV
         echo "Image name folder: ${{ env.IMAGE_NAME_FOLDER }}"
        # TEST="./images/spark-base" | TEST3=$(awk -F "/" '{print $NF}' <<< "$TEST")
     
