@@ -29,6 +29,11 @@ jobs:
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
         echo "Affected folders: $AFFECTED_FOLDER"
         echo "Image name folder: $IMAGE_NAME_FOLDER"
+
+        if [[ $AFFECTED_FOLDER == '' ]]; then
+          echo "No Dockerfile affected"
+          exit 0
+        fi
     
     - name: Set Repo Name
       run: |
@@ -36,6 +41,7 @@ jobs:
         echo "Repo name: $REPO"
 
     - name: Docker Metadata action
+      if: ${{ env.AFFECTED_FOLDER != '' }}
       id: meta
       uses: docker/metadata-action@v4.4.0
       with:
