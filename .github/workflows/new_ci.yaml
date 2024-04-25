@@ -27,8 +27,8 @@ jobs:
       run: |
         git remote update
         git fetch
-        AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
-        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
+        AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u)
+        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
         echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_OUTPUT
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
         echo "Affected folders: $AFFECTED_FOLDER"
