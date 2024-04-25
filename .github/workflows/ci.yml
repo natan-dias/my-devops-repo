@@ -32,13 +32,14 @@ jobs:
     - name: Set Repo Name
       run: |
         echo "REPO=natandias1" >> $GITHUB_ENV
-        echo "Repo name: $REPO"
+        echo "Repo name: ${{ env.REPO }}"
     
-    - name: "Set latest tag"
-      id: set-latest-tag
+    - name: "Set envs"
+      id: set-envs
       run: | 
-        echo "IMAGE_NAME_FOLDER=$(${{ github.event.inputs.folder }} | awk -F/ '{print $(NF-0)}')" >> $GITHUB_ENV
-        echo "Image name folder: $IMAGE_NAME_FOLDER"
+        echo "IMAGE_NAME_FOLDER=$(${{ github.event.inputs.folder }} | awk -F "/" '{print $NF}' <<< "${{ github.event.inputs.folder }}")" >> $GITHUB_ENV
+        echo "Image name folder: ${{ env.IMAGE_NAME_FOLDER }}"
+       # TEST="./images/spark-base" | TEST3=$(awk -F "/" '{print $NF}' <<< "$TEST")
     
     - name: Docker Metadata action
       id: meta
