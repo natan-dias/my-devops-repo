@@ -42,6 +42,7 @@ jobs:
 
   build-and-push-docker-image:
     if: ${{ env.AFFECTED_FOLDER != '' }} and ${{ github.event_name == 'pull_request' }}
+    runs-on: ubuntu-latest
     steps:
     - name: Docker Metadata action
       id: meta
