@@ -5,9 +5,12 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-on-pull-request:
+  check-dockerfile-changes:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
+    outputs:
+      affected_folder: ${{ steps.affected-folder.outputs.AFFECTED_FOLDER }}
+      image_name_folder: ${{ steps.affected-folder.outputs.IMAGE_NAME_FOLDER }}
 
     steps:
     - name: Checkout repo
@@ -20,26 +23,52 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
 
     - name: Determine affected folder
+      id: affected-folder
       run: |
         git remote update
         git fetch
-        AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u)
-        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
-        echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_ENV
-        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
+        AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u)
+        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
+        echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_OUTPUT
+        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
         echo "Affected folders: $AFFECTED_FOLDER"
         echo "Image name folder: $IMAGE_NAME_FOLDER"
+
+        if [[ $AFFECTED_FOLDER == '' ]]; then
+          echo "========= No Dockerfile affected on this PR ========="
+          exit 0
+        fi
     
     - name: Set Repo Name
+      id: repo-name
+      run: |
+        echo "REPO=natandias1" >> $GITHUB_OUTPUT
+  
+  build-and-push:
+    needs: check-dockerfile-changes
+    if: ${{ github.event_name == 'pull_request' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout repo
+      uses: actions/checkout@v3.5.2
+
+    - name: Log in to Docker Hub
+      uses: docker/login-action@v2.1.0
+      with:
+        username: ${{ secrets.DOCKER_USERNAME }}
+        password: ${{ secrets.DOCKER_PASSWORD }}
+
+    - name: Set Repo Name
+      id: repo-name
       run: |
         echo "REPO=natandias1" >> $GITHUB_ENV
-        echo "Repo name: $REPO"
 
     - name: Docker Metadata action
       id: meta
       uses: docker/metadata-action@v4.4.0
       with:
-        images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
+        images: ${{ env.REPO }}/${{ needs.check-dockerfile-changes.outputs.IMAGE_NAME_FOLDER }}
         tags: |
           type=ref,event=branch
           type=ref,event=pr
@@ -49,7 +78,7 @@ jobs:
     - name: Build and push Docker images
       uses: docker/build-push-action@v5.3.0
       with:
-        file: ${{ env.AFFECTED_FOLDER }}/Dockerfile
+        file: ${{ needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER }}/Dockerfile
         context: .
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
