@@ -5,7 +5,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-on-pull-request:
+  check-dockerfile-changes:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
 
@@ -40,8 +40,10 @@ jobs:
         echo "REPO=natandias1" >> $GITHUB_ENV
         echo "Repo name: $REPO"
 
+  build-and-push-docker-image:
+    if: ${{ env.AFFECTED_FOLDER != '' }} and ${{ github.event_name == 'pull_request' }}
+    steps:
     - name: Docker Metadata action
-      if: ${{ env.AFFECTED_FOLDER != '' }}
       id: meta
       uses: docker/metadata-action@v4.4.0
       with:
