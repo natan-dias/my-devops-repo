@@ -4,8 +4,7 @@ on:
   workflow_dispatch:
     branches:
       - main
-    tags:
-      - v*
+    tags: [ 'v*' ]
     inputs:
       folder: 
         description: 'Dockerfile folder location'
