@@ -46,7 +46,7 @@ jobs:
   
   build-and-push:
     needs: check-dockerfile-changes
-    if: ${{ github.event_name == 'pull_request' && needs.affected-folder.outputs.AFFECTED_FOLDER != '' }}
+    if: ${{ github.event_name == 'pull_request' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
     runs-on: ubuntu-latest
 
     steps:
