@@ -45,6 +45,7 @@ jobs:
         images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
         tags: |
           type=ref,event=branch
+          type=ref,event=tag
           type=semver,pattern={{major}}.{{minor}}.{{patch}}
         flavor: |
           latest=false
