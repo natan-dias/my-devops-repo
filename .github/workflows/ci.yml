@@ -12,7 +12,6 @@ on:
         required: true
         type: string
         default: './images/'
-        example: './images/spark-base'
 
 jobs:
   build-docker-image-and-push:
@@ -36,10 +35,10 @@ jobs:
     - name: "Set latest tag"
       id: set-latest-tag
       run: | 
-        echo "GITHUB_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        echo "GIT_TAG=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
         echo "RELEASE_TAG=$(git tag | sort --version-sort | tail -n1)" >> $GITHUB_ENV
         echo "Release tag: $RELEASE_TAG"
-        echo "Github tag: ${{ GITHUB_TAG }}"
+        echo "Github tag: ${{ GIT_TAG }}"
 
     - name: "Tag Docker image as release tag"
       id: tag-as-release
