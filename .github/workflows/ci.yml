@@ -39,7 +39,7 @@ jobs:
       run: | 
         IMAGE_NAME_FOLDER=$(awk -F "/" '{print $NF}' <<< ${{ github.event.inputs.folder }})
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
-        echo "Image name folder: ${{ env.IMAGE_NAME_FOLDER }}"
+        echo "Image name folder: $IMAGE_NAME_FOLDER"
     
     - name: Docker Metadata action
       id: meta
@@ -47,7 +47,7 @@ jobs:
       with:
         images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
         tags: |
-          type=semver,pattern={{version}}.{{major}}.{{minor}}
+          type=semver,pattern={{major}}.{{minor}}.{{patch}}
         flavor: |
           latest=false
       
