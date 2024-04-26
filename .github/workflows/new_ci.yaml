@@ -43,6 +43,11 @@ jobs:
       id: repo-name
       run: |
         echo "REPO=natandias1" >> $GITHUB_OUTPUT
+    
+    - name: Upload coverage reports to Codecov
+      uses: codecov/codecov-action@v4.0.1
+      with:
+        token: ${{ secrets.CODECOV_TOKEN }}
   
   build-and-push:
     needs: check-dockerfile-changes
@@ -83,11 +88,6 @@ jobs:
         tags: ${{ steps.meta.outputs.tags }}
         labels: ${{ steps.meta.outputs.labels }}
         push: ${{ github.event_name == 'pull_request' }}
-    
-    - name: Upload coverage reports to Codecov
-      uses: codecov/codecov-action@v4.0.1
-      with:
-        token: ${{ secrets.CODECOV_TOKEN }}
     
     - name: Check status
       run: echo "Dockerfile check complete"
