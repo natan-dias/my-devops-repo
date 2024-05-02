@@ -38,8 +38,8 @@ jobs:
     - name: Set Repo Name
       id: set-repo
       run: |
-        echo "REPO=natandias1" >> $GITHUB_OUTPUT
-        echo "Repo name: ${{ env.REPO }}"
+        REPO=natandias1
+        echo "REPO=$REPO" >> $GITHUB_OUTPUT
     
     - name: "Set image name folder"
       id: set-image-name
