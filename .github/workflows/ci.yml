@@ -56,9 +56,11 @@ jobs:
           });
 
           const lastReleaseTag = releases[0].tag_name;
-          echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
+          core.setOutput('last_release_tag', lastReleaseTag);
 
           console.log(`Last release tag: ${lastReleaseTag}`);
+        run: |
+          echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
 
 
     - name: Build and Push Docker Image
