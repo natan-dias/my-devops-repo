@@ -59,8 +59,8 @@ jobs:
           core.setOutput('last_release_tag', lastReleaseTag);
 
           console.log(`Last release tag: ${lastReleaseTag}`);
-        run: |
-          echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
+      run: |
+        echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
 
 
     - name: Build and Push Docker Image
