@@ -19,12 +19,12 @@ on:
 
 jobs:
   set-envs:
-    name: Build and Push Docker Image
+    name: Set Environment Variables
     runs-on: ubuntu-latest
     outputs:
       lastReleaseTag: ${{ steps.get_last_release_tag.outputs.lastReleaseTag }}
-      IMAGE_NAME_FOLDER: ${{ steps.set-envs.outputs.IMAGE_NAME_FOLDER }}
-      REPO: ${{ steps.set-envs.outputs.REPO }}
+      IMAGE_NAME_FOLDER: ${{ steps.set-image-name.outputs.IMAGE_NAME_FOLDER }}
+      REPO: ${{ steps.set-repo.outputs.REPO }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
@@ -36,12 +36,13 @@ jobs:
         password: ${{ secrets.DOCKER_PASSWORD }}
     
     - name: Set Repo Name
+      id: set-repo
       run: |
         echo "REPO=natandias1" >> $GITHUB_OUTPUT
         echo "Repo name: ${{ env.REPO }}"
     
-    - name: "Set envs"
-      id: set-envs
+    - name: "Set image name folder"
+      id: set-image-name
       run: | 
         IMAGE_NAME_FOLDER=$(awk -F "/" '{print $NF}' <<< ${{ github.event.inputs.folder }})
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
@@ -58,11 +59,12 @@ jobs:
           });
 
           const lastReleaseTag = releases[0].tag_name;
-          core.setOutput('last_release_tag', lastReleaseTag);
+          core.setOutput('lastReleaseTag', lastReleaseTag);
 
           console.log(`Last release tag: ${lastReleaseTag}`);
 
   build-docker-image-and-push:
+    name: Build and Push Docker Image
     needs: set-envs
     runs-on: ubuntu-latest
     steps:
