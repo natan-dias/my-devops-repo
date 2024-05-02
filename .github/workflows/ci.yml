@@ -22,7 +22,7 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     outputs:
-      last_release_tag: ${{ steps.get_last_release_tag.outputs.last_release_tag }}
+      last_release_tag: ${{ steps.get_last_release_tag.outputs.LAST_RELEASE_TAG }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
@@ -56,7 +56,8 @@ jobs:
           });
 
           const lastReleaseTag = releases[0].tag_name;
-          core.setOutput('last_release_tag', lastReleaseTag);
+         # core.setOutput('last_release_tag', lastReleaseTag);
+          echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
 
           console.log(`Last release tag: ${lastReleaseTag}`);
 
