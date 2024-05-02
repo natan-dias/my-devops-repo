@@ -24,7 +24,6 @@ jobs:
     outputs:
       lastReleaseTag: ${{ steps.get_last_release_tag.outputs.lastReleaseTag }}
       IMAGE_NAME_FOLDER: ${{ steps.set-image-name.outputs.IMAGE_NAME_FOLDER }}
-      REPO: ${{ steps.set-repo.outputs.REPO }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
@@ -34,12 +33,6 @@ jobs:
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Set Repo Name
-      id: set-repo
-      run: |
-        REPO=natandias1
-        echo "REPO=$REPO" >> $GITHUB_OUTPUT
     
     - name: "Set image name folder"
       id: set-image-name
@@ -68,11 +61,17 @@ jobs:
     needs: set-envs
     runs-on: ubuntu-latest
     steps:
+
+    - name: Set Repo Name
+      id: repo-name
+      run: |
+        echo "REPO=natandias1" >> $GITHUB_ENV
+
     - name: Build and Push Docker Image
       id: build-and-push
       run: |
-        docker build -t ${{ needs.set-envs.outputs.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
-        docker push ${{ needs.set-envs.outputs.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }}
+        docker build -t ${{ env.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
+        docker push ${{ env.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }}
     
     #- name: Docker Metadata action
     #  id: meta
