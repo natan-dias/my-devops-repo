@@ -42,12 +42,28 @@ jobs:
         IMAGE_NAME_FOLDER=$(awk -F "/" '{print $NF}' <<< ${{ github.event.inputs.folder }})
         echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
         echo "Image name folder: $IMAGE_NAME_FOLDER"
+    
+    - name: Get Last release tag
+      uses: actions/github-script@v6
+      id: get_last_release_tag
+      with:
+        script: |
+          const { data: releases } = await github.repos.listReleases({
+            owner: context.repo.owner,
+            repo: context.repo.repo
+          });
+
+          const lastReleaseTag = releases[0].tag_name;
+          core.setOutput('last_release_tag', lastReleaseTag);
+
+          console.log(`Last release tag: ${lastReleaseTag}`);
+
 
     - name: Build and Push Docker Image
       id: build-and-push
       run: |
-        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ github.event.inputs.release_tag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
-        docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ github.event.inputs.release_tag }}
+        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.get_last_release_tag.outputs.last_release_tag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
+        docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.get_last_release_tag.outputs.last_release_tag }}
     
     #- name: Docker Metadata action
     #  id: meta
