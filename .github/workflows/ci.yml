@@ -22,7 +22,7 @@ jobs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     outputs:
-      last_release_tag: ${{ steps.get_last_release_tag.outputs.LAST_RELEASE_TAG }}
+      lastReleaseTag: ${{ steps.get_last_release_tag.outputs.lastReleaseTag }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
@@ -59,15 +59,13 @@ jobs:
           core.setOutput('last_release_tag', lastReleaseTag);
 
           console.log(`Last release tag: ${lastReleaseTag}`);
-      run: |
-        echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
 
 
     - name: Build and Push Docker Image
       id: build-and-push
       run: |
-        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.last_release_tag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
-        docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.last_release_tag }}
+        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
+        docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.lastReleaseTag }}
     
     #- name: Docker Metadata action
     #  id: meta
