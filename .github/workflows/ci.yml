@@ -74,21 +74,3 @@ jobs:
       run: |
         docker build -t ${{ env.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
         docker push ${{ env.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }}
-    
-    #- name: Docker Metadata action
-    #  id: meta
-    #  uses: docker/metadata-action@v4.4.0
-    #  with:
-    #    images: ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}
-    #    tags: |
-    #      type=ref,event=branch
-    #      type=ref,event=tag
-    #      type=semver,pattern={{major}}.{{minor}}.{{patch}}
-    #  
-    #- name: Build and push Docker images
-    #  uses: docker/build-push-action@v4.0.0
-    #  with:
-    #    file: ${{ github.event.inputs.folder }}/Dockerfile
-    #    context: .
-    #    tags: ${{ steps.meta.outputs.tags }}
-    #    push: ${{ github.event_name != 'pull_request' }}
