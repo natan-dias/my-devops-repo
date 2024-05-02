@@ -64,7 +64,7 @@ jobs:
     - name: Build and Push Docker Image
       id: build-and-push
       run: |
-        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.get_last_release_tag.outputs.last_release_tag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
+        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.last_release_tag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
         docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.last_release_tag }}
     
     #- name: Docker Metadata action
