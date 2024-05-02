@@ -56,7 +56,6 @@ jobs:
           });
 
           const lastReleaseTag = releases[0].tag_name;
-         # core.setOutput('last_release_tag', lastReleaseTag);
           echo "LAST_RELEASE_TAG=${lastReleaseTag}" >> $GITHUB_OUTPUT
 
           console.log(`Last release tag: ${lastReleaseTag}`);
