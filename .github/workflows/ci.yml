@@ -18,11 +18,13 @@ on:
         default: 'latest'
 
 jobs:
-  build-docker-image-and-push:
+  set-envs:
     name: Build and Push Docker Image
     runs-on: ubuntu-latest
     outputs:
       lastReleaseTag: ${{ steps.get_last_release_tag.outputs.lastReleaseTag }}
+      IMAGE_NAME_FOLDER: ${{ steps.set-envs.outputs.IMAGE_NAME_FOLDER }}
+      REPO: ${{ steps.set-envs.outputs.REPO }}
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
@@ -35,14 +37,14 @@ jobs:
     
     - name: Set Repo Name
       run: |
-        echo "REPO=natandias1" >> $GITHUB_ENV
+        echo "REPO=natandias1" >> $GITHUB_OUTPUT
         echo "Repo name: ${{ env.REPO }}"
     
     - name: "Set envs"
       id: set-envs
       run: | 
         IMAGE_NAME_FOLDER=$(awk -F "/" '{print $NF}' <<< ${{ github.event.inputs.folder }})
-        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_ENV
+        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
         echo "Image name folder: $IMAGE_NAME_FOLDER"
     
     - name: Get Last release tag
@@ -60,12 +62,15 @@ jobs:
 
           console.log(`Last release tag: ${lastReleaseTag}`);
 
-
+  build-docker-image-and-push:
+    needs: set-envs
+    runs-on: ubuntu-latest
+    steps:
     - name: Build and Push Docker Image
       id: build-and-push
       run: |
-        docker build -t ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
-        docker push ${{ env.REPO }}/${{ env.IMAGE_NAME_FOLDER }}:${{ needs.build-docker-image-and-push.outputs.lastReleaseTag }}
+        docker build -t ${{ needs.set-envs.outputs.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }} -f ${{ github.event.inputs.folder }}/Dockerfile .
+        docker push ${{ needs.set-envs.outputs.REPO }}/${{ needs.set-envs.outputs.IMAGE_NAME_FOLDER }}:${{ needs.set-envs.outputs.lastReleaseTag }}
     
     #- name: Docker Metadata action
     #  id: meta
