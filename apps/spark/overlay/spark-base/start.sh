@@ -12,7 +12,7 @@ fi
 
 echo "ANNOTATE CHANGE CAUSE REVISION | TAG TO APPLY: $1"
 
-export reviion_tag="$1"
+export revision_tag="$1"
 
 kustomize build | kubectl apply -f -
 
