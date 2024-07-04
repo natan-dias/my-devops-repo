@@ -1,0 +1,13 @@
+apiVersion: kustomize.config.k8s.io/v1beta1
+kind: Kustomization
+
+namespace: vault
+resources:
+- ingress.yaml
+
+secretGenerator:
+  - name: secret-vault.local
+    files:
+      - tls.key=certs/domain.key
+      - tls.crt=certs/domain.crt
+    type: "kubernetes.io/tls"

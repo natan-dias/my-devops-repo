@@ -4,7 +4,7 @@ kind: Ingress
 metadata:
   name: argocd-ingress
   namespace: argocd
-  annotations:
+  annotations: # Add the following for ArgoCD local deployment
     nginx.ingress.kubernetes.io/backend-protocol: "HTTPS"
     alb.ingress.kubernetes.io/ssl-passthrough: "true"
     nginx.ingress.kubernetes.io/force-ssl-redirect: "false"
