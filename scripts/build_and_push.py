@@ -17,6 +17,8 @@ import sys
 #        return True
 #    return False
 
+# Function to check for changes in Dockerfile
+
 # Function to build and push Docker image
 def build_and_push_image(folder_path):
     folder_name = os.path.basename(folder_path)
