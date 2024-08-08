@@ -1,0 +1,10 @@
+approvalRules:
+  - changedFiles:
+      allowed:
+        - infra/*
+        - apps/*
+        - argocd-deploys/*
+        - README.md
+  - changedFiles:
+      allowed:
+        - scripts/build_and_push.py
