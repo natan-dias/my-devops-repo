@@ -2,4 +2,4 @@
 
 # my-devops-repo
 
-## Repo for testing
+## Devops Repo for testing
