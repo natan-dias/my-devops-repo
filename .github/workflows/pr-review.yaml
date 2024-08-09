@@ -1,16 +1,29 @@
-name: Auto PR Review
+name: Auto Approve Pull Requests
 
-on: [pull_request]
+on:
+  pull_request:
+    types: [opened, synchronize]
 
 jobs:
-  test:
+  auto-approve:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v3.5.2
-      - uses: actions/setup-node@v3
-      - uses: omio-labs/pr-reviewer-bot@v1
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      - name: Set up Python
+        uses: actions/setup-python@v2
         with:
+          python-version: '3.x'
+
+      - name: Install dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install github3.py
+
+      - name: Auto Approve Pull Requests
+        env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
-        
-          
+        run: |
+          python scripts/python_auto_pr_approve.py
