@@ -12,7 +12,11 @@ gh = Github(github_token)
 
 # Get the repository and pull request from the github context
 repository = gh.get_repo(os.getenv('GITHUB_REPOSITORY'))
-pull_request = repository.get_pull(int(os.getenv('GITHUB_REF').split('/')[-1]))
+pull_request_number = os.getenv('GITHUB_REF').split('/')[-1]
+if pull_request_number != 'merge':
+    pull_request = repository.get_pull(int(pull_request_number))
+else:
+    print("Pull request not found")
 
 # Get the list of files changed in the pull request
 files_changed = [file.filename for file in pull_request.get_files()]
