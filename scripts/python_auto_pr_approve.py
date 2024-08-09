@@ -12,7 +12,8 @@ gh = Github(github_token)
 
 # Get the repository and pull request from the github context
 repository = gh.get_repo(os.getenv('GITHUB_REPOSITORY'))
-pull_request = int(os.getenv('PULL_REQUEST_NUMBER'))
+pull_request_number = int(os.getenv('PULL_REQUEST_NUMBER'))
+pull_request = repository.get_pull(int(pull_request_number))
 
 #os.getenv('GITHUB_REF').split('/')[-1]
 #if pull_request_number != 'merge':
