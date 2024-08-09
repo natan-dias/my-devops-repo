@@ -25,5 +25,7 @@ jobs:
       - name: Auto Approve Pull Requests
         env:
           GITHUB_TOKEN: ${{ secrets.GH_TOKEN }}
+          GITHUB_REPOSITORY: ${{ github.repository }}
+          GITHUB_REF: ${{ github.event.pull_request.head.ref }}
         run: |
           python scripts/python_auto_pr_approve.py
