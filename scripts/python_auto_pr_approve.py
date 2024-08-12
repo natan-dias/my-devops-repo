@@ -5,7 +5,7 @@ from github import Github
 github_token = os.getenv('GH_TOKEN')
 
 # List of files to trigger auto-approval
-files_to_trigger_approval = ['README.md', 'file2.py']
+files_to_trigger_approval = ['README.md', 'python_auto_pr_approve.py']
 
 # Login to Github using the token
 gh = Github(github_token)
@@ -27,7 +27,7 @@ files_changed = [file.filename for file in pull_request.get_files()]
 # Check if any of the files to trigger auto-approval are changed
 if any(file in files_changed for file in files_to_trigger_approval):
     # Add the reviewer (you can add more reviewers if needed)
-    pull_request.create_review_request(reviewers=['Python Auto Approver'])
+    pull_request.create_review_request(reviewers=['natan-bot'])
 
     # Approve the pull request
     pull_request.create_review(body='Approved', event='APPROVE')
