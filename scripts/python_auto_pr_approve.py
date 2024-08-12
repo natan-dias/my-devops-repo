@@ -15,6 +15,15 @@ repository = gh.get_repo(os.getenv('GITHUB_REPOSITORY'))
 pull_request_number = int(os.getenv('PULL_REQUEST_NUMBER'))
 pull_request = repository.get_pull(int(pull_request_number))
 
+# Get more information
+
+print(f"Pull request: {pull_request.number} - {pull_request.title}")
+print(f"Repository: {repository.name}")
+print(f"Repository owner: {repository.owner.login}")
+print(f"Pull request state: {pull_request.state}")
+print(f"Pull request merged: {pull_request.merged}")
+print(f"Pull request closed: {pull_request.closed}")
+
 #os.getenv('GITHUB_REF').split('/')[-1]
 #if pull_request_number != 'merge':
 #    pull_request = repository.get_pull(int(pull_request_number))
