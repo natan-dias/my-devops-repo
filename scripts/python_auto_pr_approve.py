@@ -26,8 +26,16 @@ files_changed = [file.filename for file in pull_request.get_files()]
 
 # Check if any of the files to trigger auto-approval are changed
 if any(file in files_changed for file in files_to_trigger_approval):
-    # Add the reviewer (you can add more reviewers if needed)
-    pull_request.create_review_request(reviewers=['natan-bot'])
-
-    # Approve the pull request
-    pull_request.create_review(body='Approved', event='APPROVE')
+    # Get the reviewer
+        reviewer = 'natan-bot'
+        try:
+            # Check if the reviewer is a valid GitHub user
+            gh.get_user(reviewer)
+        except Exception as e:
+            print(f"Error: {e}")
+            print("Reviewer is not a valid GitHub user")
+        else:
+            # Add the reviewer
+            pull_request.create_review_request(reviewers=[reviewer])
+            # Approve the pull request
+            pull_request.create_review(body='Approved', event='APPROVE')
