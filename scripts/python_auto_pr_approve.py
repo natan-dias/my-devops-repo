@@ -31,6 +31,7 @@ if any(file in files_changed for file in files_to_trigger_approval):
         try:
             # Check if the reviewer is a valid GitHub user
             gh.get_user(reviewer)
+            print(f"Reviewer is valid: {reviewer}")
         except Exception as e:
             print(f"Error: {e}")
             print("Reviewer is not a valid GitHub user")
