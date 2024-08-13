@@ -20,6 +20,15 @@ import sys
 # Function to check for changes in Dockerfile
 
 # Function to build and push Docker image
+
+def build_image(folder_path):
+    folder_name = os.path.basename(folder_path)
+    image_name = f"natandias1/{folder_name}:latest"
+    
+    # Build Docker image
+    print("Building Docker image...")
+    subprocess.run(["docker", "build", "-t", image_name, folder_path])
+
 def build_and_push_image(folder_path):
     folder_name = os.path.basename(folder_path)
     image_name = f"natandias1/{folder_name}:latest"
