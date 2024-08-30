@@ -4,6 +4,8 @@ metadata:
   name: argo-spark
   namespace: argocd
 spec:
+  plugin:
+    name: argocd-vault-plugin
   project: default
   source:
     repoURL: git@github.com:natan-dias/my-devops-repo.git
