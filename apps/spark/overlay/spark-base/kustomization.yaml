@@ -10,6 +10,6 @@ resources:
 secretGenerator:
   - name: secret-spark.local
     files:
-      - tls.key=<spark-base:spark-local.key>
-      - tls.crt=<spark-base:spark-local.crt>
+      - tls.key=<path:cubbyhole/data/spark-base#spark-local.key>
+      - tls.crt=<path:cubbyhole/data/spark-base#spark-local.crt>
     type: "kubernetes.io/tls"
