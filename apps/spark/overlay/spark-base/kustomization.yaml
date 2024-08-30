@@ -10,6 +10,6 @@ resources:
 secretGenerator:
   - name: secret-spark.local
     files:
-      - tls.key=fake-certificates/domain.key
-      - tls.crt=fake-certificates/domain.crt
+      - tls.key=<spark-base:spark-local.key>
+      - tls.crt=<spark-base:spark-local.crt>
     type: "kubernetes.io/tls"
