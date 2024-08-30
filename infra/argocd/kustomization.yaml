@@ -5,6 +5,10 @@ namespace: argocd
 resources:
 - https://raw.githubusercontent.com/argoproj/argo-cd/v2.7.2/manifests/install.yaml
 - ingress.yaml
+- vault-secret.yaml
+
+patchesStrategicMerge:
+- argo-repo-server-patch.yaml
 
 secretGenerator:
   - name: secret-argocd.local
