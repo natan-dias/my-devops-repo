@@ -1,0 +1,9 @@
+namespace: spark
+resources:
+  - ../../base
+  - ingress.yaml
+  - minio.yaml
+  - spark-iceberg.yaml
+  - minio-mc.yaml
+  - spark-rest.yaml
+  - storage.yaml

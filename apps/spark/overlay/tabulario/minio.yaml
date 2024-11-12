@@ -1,0 +1,54 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: minio
+  namespace: spark
+  labels:
+    service: minio
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: minio
+  template:
+    metadata:
+      labels:
+        service: minio
+    spec:
+      containers:
+      - name: minio
+        image: minio/minio
+        command:
+        - /bin/bash
+        - -c
+        args: 
+        - minio server /data --console-address :9090
+        ports:
+        - containerPort: 9000
+        - containerPort: 9001
+        env:
+        - name: MINIO_ROOT_USER
+          value: admin
+        - name: MINIO_ROOT_PASSWORD
+          value: password
+        - name: MINIO_DOMAIN
+          value: minio
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: minio-svc
+  namespace: spark
+spec:
+  type: ClusterIP
+  selector:
+    service: minio
+  ports:
+    - name: minio-port
+      protocol: TCP
+      port: 9000
+      targetPort: 9000
+    - name: minio-port-2
+      protocol: TCP
+      port: 9001
+      targetPort: 9001

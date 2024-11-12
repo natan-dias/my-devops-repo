@@ -1,0 +1,21 @@
+apiVersion: argoproj.io/v1alpha1
+kind: Application
+metadata:
+  name: argo-spark
+  namespace: argocd
+spec:
+  project: default
+  source:
+    repoURL: git@github.com:natan-dias/my-devops-repo.git
+    targetRevision: main
+    path: apps/spark/overlay/spark-base
+  destination:
+    server: https://kubernetes.default.svc
+    namespace: spark
+  syncPolicy:
+    syncOptions:
+    - CreateNamespace=true
+    - PruneLast=true
+    automated:
+      selfHeal: true
+      prune: true

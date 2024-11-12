@@ -1,0 +1,40 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: spark-main
+  namespace: spark
+  labels:
+    service: spark
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      service: spark
+  template:
+    metadata:
+      labels:
+        service: spark
+    spec:
+      containers:
+      - name: spark-main
+        image: natandias1/spark-base:1.0.8
+        ports:
+        - containerPort: 7077
+        - containerPort: 8080
+        volumeMounts:
+          - name: spark-apps
+            mountPath: /opt/spark-apps
+          - name: spark-data
+            mountPath: /opt/spark-data
+        env:
+        - name: SPARK_MASTER_HOST
+          value: spark-main
+        - name: SPARK_WORKLOAD
+          value: master
+      volumes:
+        - name: spark-apps
+          persistentVolumeClaim:
+            claimName: spark-apps
+        - name: spark-data
+          persistentVolumeClaim:
+            claimName: spark-data

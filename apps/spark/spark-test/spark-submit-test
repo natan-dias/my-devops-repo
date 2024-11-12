@@ -1,0 +1,10 @@
+./bin/spark-submit --master spark://spark-main:7077 \
+  --class org.apache.spark.examples.SparkPi \
+  --name SparkPi \
+  --conf spark.executor.instances=1 \
+  --conf spark.kubernetes.authenticate.driver.serviceAccountName=spark \
+  --conf spark.kubernetes.namespace=spark \
+  --driver-memory 3G \
+  --executor-memory 3G \
+  --total-executor-cores 2 \
+  local:///opt/spark/examples/jars/spark-examples_2.12-3.5.1.jar 1

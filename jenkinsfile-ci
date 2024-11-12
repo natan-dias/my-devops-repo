@@ -1,0 +1,60 @@
+environment {
+    // Set the environment variable based on the branch name
+    // Still need to work on that
+    if (env.BRANCH_NAME == 'main') {
+        env.ENV_NAME = 'prod'
+    }
+    else {
+        env.ENV_NAME = 'dev'
+    }
+    env.REPO = 'my-devops-repo'
+    }
+
+pipeline {
+
+    // Set agent if necessary
+    agent any
+
+    parameters {
+        string(name: 'dockerFolder', defaultValue: 'apps', description: 'Change Dockerfiles folder path')
+    }
+
+    stages {
+        stage('Build Docker Images') {
+            steps {
+                script {
+                    def dockerFolder = 'apps' // Relative path within the workspace where Dockerfiles are located
+
+                    def findDockerfiles = { dir ->
+                        dir.eachDirRecurse { subDir ->
+                            def dockerfile = new File(subDir, 'Dockerfile')
+                            if (dockerfile.exists()) {
+                                def folderPath = subDir.toString().replace(env.WORKSPACE + '/', '')
+                                def hasChanges = sh(script: "git diff --quiet HEAD~1 ${subDir}/Dockerfile || echo 'true'", returnStatus: true)
+
+                                if (hasChanges == 0) {
+                                    echo "Building Docker image from ${folderPath}"
+                                    sh "docker build -t my-image:${folderPath} ${subDir}"
+                                }
+                            }
+                        }
+                    }
+
+                    findDockerfiles(new File(env.WORKSPACE, dockerFolder))
+                }
+            }
+        }
+        stage('Remove Old Docker Builds') {
+            steps {
+                script {
+                    sh "docker image prune -f --filter ancestor=my-image:latest" // Specify the name of the Docker image you want to remove old builds for
+                }
+            }
+        }
+        stage('Cleanup Workspace') {
+            steps {
+                sh "rm -rf ${env.WORKSPACE}/*"
+            }
+        }       
+    }
+}

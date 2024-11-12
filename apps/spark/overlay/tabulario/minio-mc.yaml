@@ -1,0 +1,24 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-mc
+  namespace: spark
+  labels:
+    service: minio-mc
+spec:
+  template:
+    metadata:
+      labels:
+        service: minio-mc
+    spec:
+      restartPolicy: Never
+      containers:
+      - name: minio
+        image: minio/mc
+        command:
+        - /bin/bash
+        - -c
+        args:
+        - until (/usr/bin/mc config host add minio http://minio-svc:9000 admin password) do echo '...waiting...' && sleep 1; done;
+        - /usr/bin/mc rm -r --force minio/warehouse && /usr/bin/mc mb minio/warehouse && /usr/bin/mc policy set public minio/warehouse && /usr/bin/mc anonymous set download minio/warehouse
+

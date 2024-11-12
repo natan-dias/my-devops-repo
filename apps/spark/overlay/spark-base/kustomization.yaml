@@ -1,0 +1,16 @@
+namespace: spark
+resources:
+  - ../../base
+  - service.yaml
+  - ingress.yaml
+  - spark.yaml
+  - spark-worker.yaml
+  - storage.yaml
+  - spark-secret.yaml
+
+#secretGenerator:
+#  - name: secret-spark.local
+#    files:
+#      - tls.key=<path:vault/data/spark-base#spark-local.key>
+#      - tls.crt=<path:vault/data/spark-base#spark-local.crt>
+#    type: "kubernetes.io/tls"
