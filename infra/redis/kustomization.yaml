@@ -3,7 +3,6 @@ kind: Kustomization
 
 namespace: redis
 resources:
-- ingress.yaml
 - redis-storage.yaml
 - redis-service.yaml
 - redis-deployment.yaml
