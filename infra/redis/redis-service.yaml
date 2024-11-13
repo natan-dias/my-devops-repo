@@ -10,4 +10,5 @@ spec:
   - name: redis
     port: 6379
     targetPort: 6379
-  type: ClusterIP
+    nodePort: 30010
+  type: NodePort
