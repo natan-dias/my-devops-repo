@@ -7,7 +7,7 @@ spec:
   project: default
   source:
     repoURL: git@github.com:natan-dias/my-devops-repo.git
-    targetRevision: feature-new-app
+    targetRevision: main
     path: infra/redis
   destination:
     server: 'https://kubernetes.default.svc'
