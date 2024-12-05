@@ -1,6 +1,7 @@
 from flask import Flask
 from flask_restful import Api, Resource, reqparse, fields, marshal_with, abort
 from flask_sqlalchemy import SQLAlchemy
+import os
 
 app = Flask(__name__)
 api = Api(app)
@@ -96,4 +97,5 @@ api.add_resource(Video, "/video/<int:video_id>")
 #--------------------------------------------#
 
 if __name__ == '__main__':
-    app.run(debug=True)
+    debug_mode = os.environ.get("DEBUG_MODE", "false").lower() == "true"
+    app.run(debug=debug_mode)
