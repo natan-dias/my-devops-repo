@@ -1,5 +1,4 @@
-<img alt="Python" src="https://img.shields.io/badge/-python-F7B93E?style=flat-square&logo=python&logoColor=white" />
-<img alt="Flask" src="https://img.shields.io/badge/-Flask-000?style=flat-square&logo=flask&logoColor=white" />
+<img alt="Python" src="https://img.shields.io/badge/-python-F7B93E?style=flat-square&logo=python&logoColor=white" /><img alt="Flask" src="https://img.shields.io/badge/-Flask-000?style=flat-square&logo=flask&logoColor=white" />
 
 # Personal Knowledge Base Simple API
 
@@ -64,3 +63,8 @@ This will start a Flask app in localhost which can also be accessible via browse
 
 Please check the full [API documentation HERE](./API-documentation.md).
 
+## Next Steps
+
+- Dockerize app
+- Migrate to Postgres
+- Kubernetes Deployment
