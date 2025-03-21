@@ -1,0 +1,10 @@
+namespace: nginx
+resources:
+  - deployment.yaml
+
+secretGenerator:
+  - name: secret-nginx.local
+    files:
+      - tls.key=fake-certificates/domain.key
+      - tls.crt=fake-certificates/domain.crt
+    type: "kubernetes.io/tls"
