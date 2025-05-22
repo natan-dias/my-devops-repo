@@ -1,8 +1,16 @@
 FROM nginx:latest
+
 USER root
+
 RUN apt-get update && apt-get install \
     git -y
+
 WORKDIR /usr/share/nginx/html
+
 RUN rm -rf /usr/share/nginx/html/*
+
 RUN git clone https://github.com/natan-dias/webserver-example-src.git .
+
+USER nginx
+
 EXPOSE 80 443
