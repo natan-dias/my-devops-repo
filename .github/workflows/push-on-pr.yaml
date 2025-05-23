@@ -7,10 +7,17 @@ on:
   push:
     branches: [ "main" ]
 
+permissions:
+  contents: read
+
 jobs:
   check-dockerfile-changes:
     if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
     outputs:
       affected_folder: ${{ steps.affected-folder.outputs.AFFECTED_FOLDER }}
       image_name_folder: ${{ steps.affected-folder.outputs.IMAGE_NAME_FOLDER }}
@@ -51,6 +58,9 @@ jobs:
     needs: check-dockerfile-changes
     if: ${{ github.event_name == 'pull_request' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
 
     steps:
     - name: Checkout repo
@@ -98,6 +108,9 @@ jobs:
     runs-on: ubuntu-latest
     if: ${{ github.event_name == 'push' && github.event.action == 'push' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
     needs: check-dockerfile-changes
+    permissions:
+      contents: read
+      packages: write
     steps:
     - name: Checkout repo
       uses: actions/checkout@v3.5.2
