@@ -54,7 +54,7 @@ jobs:
         echo "REPO=natandias1" >> $GITHUB_OUTPUT
     
     - name: Upload image name as an artifact
-      uses: actions/upload-artifact@v3
+      uses: actions/upload-artifact@v4
       with:
         name: image_name
         path: image_name.txt
