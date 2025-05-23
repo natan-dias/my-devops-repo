@@ -96,7 +96,7 @@ jobs:
     
   build-and-push-latest-on-merge:
     runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' }} && ${{ github.event.action == 'push' }}
+    if: ${{ github.event_name == 'push' && github.event.action == 'push' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
     needs: check-dockerfile-changes
     steps:
     - name: Checkout repo
