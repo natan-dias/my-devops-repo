@@ -1,4 +1,4 @@
-name: CI to Docker Hub
+name: Manual CI to Docker Hub
 
 on:
   workflow_dispatch:
