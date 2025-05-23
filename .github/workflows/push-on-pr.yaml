@@ -1,10 +1,7 @@
-name: CI Build and Push
+name: CI Build and Push on PR
 
 on:
   pull_request:
-    branches: [ "main" ]
-
-  push:
     branches: [ "main" ]
 
 permissions:
@@ -44,6 +41,8 @@ jobs:
         echo "Affected folders: $AFFECTED_FOLDER"
         echo "Image name folder: $IMAGE_NAME_FOLDER"
 
+        echo "IMAGE_NAME_ARTIFACT=$IMAGE_NAME_FOLDER" > image_name.txt
+
         if [[ $AFFECTED_FOLDER == '' ]]; then
           echo "========= No Dockerfile affected on this PR ========="
           exit 0
@@ -53,6 +52,13 @@ jobs:
       id: repo-name
       run: |
         echo "REPO=natandias1" >> $GITHUB_OUTPUT
+    
+    - name: Upload image name as an artifact
+      uses: actions/upload-artifact@v3
+      with:
+        name: image_name
+        path: image_name.txt
+        retention-days: 1
   
   build-and-push:
     needs: check-dockerfile-changes
@@ -103,37 +109,3 @@ jobs:
         echo "Docker image name: ${{ needs.check-dockerfile-changes.outputs.IMAGE_NAME_FOLDER }}"
         echo "Affected folders: ${{ needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER }}"
         echo "Docker image tags: ${{ steps.meta.outputs.tags }}"
-    
-  build-and-push-latest-on-merge:
-    runs-on: ubuntu-latest
-    if: ${{ github.event_name == 'push' && github.event.action == 'push' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
-    needs: check-dockerfile-changes
-    permissions:
-      contents: read
-      packages: write
-    steps:
-    - name: Checkout repo
-      uses: actions/checkout@v3.5.2
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2.1.0
-      with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
-    
-    - name: Docker Metadata action
-      id: meta
-      uses: docker/metadata-action@v4.4.0
-      with:
-        images: ${{ env.REPO }}/${{ needs.check-dockerfile-changes.outputs.IMAGE_NAME_FOLDER }}
-        tags: latest
-    
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v5.3.0
-      with:
-        file: ${{ needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER }}/Dockerfile
-        context: .
-        tags: latest
-        labels: ${{ steps.meta.outputs.labels }}
-        push: ${{ github.event_name == 'push' }}
-
