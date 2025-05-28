@@ -1,4 +1,4 @@
-[![CI](https://github.com/natan-dias/my-devops-repo/actions/workflows/push-on-pr.yaml/badge.svg?event=pull_request)](https://github.com/natan-dias/my-devops-repo/actions/workflows/new_ci.yaml) [![codecov](https://codecov.io/gh/natan-dias/my-devops-repo/graph/badge.svg?token=GSHQHG9UAD)](https://codecov.io/gh/natan-dias/my-devops-repo) [![Release](https://github.com/natan-dias/my-devops-repo/actions/workflows/ci.yml/badge.svg)](https://github.com/natan-dias/my-devops-repo/actions/workflows/ci.yml)
+[![CI](https://github.com/natan-dias/my-devops-repo/actions/workflows/ci.yaml/badge.svg)](https://github.com/natan-dias/my-devops-repo/actions/workflows/ci.yaml)(https://codecov.io/gh/natan-dias/my-devops-repo) [![Release Image to Docker Hub](https://github.com/natan-dias/my-devops-repo/actions/workflows/release.yml/badge.svg)](https://github.com/natan-dias/my-devops-repo/actions/workflows/release.yml)
 
 # my-devops-repo
 
