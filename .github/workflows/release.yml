@@ -1,4 +1,4 @@
-name: Manual CI to Docker Hub
+name: Release Image to Docker Hub
 
 on:
   workflow_dispatch:
