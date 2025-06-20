@@ -1,0 +1,9 @@
+FROM mysql:8.0
+
+# Change Database user and database name by some parameters
+ENV MYSQL_ROOT_PASSWORD=1234 \
+    MYSQL_DATABASE=wordpress \ 
+    MYSQL_USER=wpuser \
+    MYSQL_PASSWORD=wpuser
+
+EXPOSE 3306
