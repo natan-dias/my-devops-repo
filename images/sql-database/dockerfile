@@ -1,5 +1,7 @@
 FROM mysql:9.3.0
 
+LABEL maintainer="natandias1"
+
 # Change Database user and database name by some parameters
 ENV MYSQL_ROOT_PASSWORD=$dbrootpassword \
     MYSQL_DATABASE=$dbname \ 
