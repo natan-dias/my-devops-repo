@@ -9,54 +9,44 @@ permissions:
 
 jobs:
   check-dockerfile-changes:
-    if: ${{ github.event_name == 'pull_request' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
-      packages: write
-
     outputs:
       affected_folder: ${{ steps.affected-folder.outputs.AFFECTED_FOLDER }}
       image_name_folder: ${{ steps.affected-folder.outputs.IMAGE_NAME_FOLDER }}
+      dockerfile_changed: ${{ steps.affected-folder.outputs.DOCKERFILE_CHANGED }}
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
-
-    - name: Log in to Docker Hub
-      uses: docker/login-action@v2.1.0
+      uses: actions/checkout@v4
       with:
-        username: ${{ secrets.DOCKER_USERNAME }}
-        password: ${{ secrets.DOCKER_PASSWORD }}
+        fetch-depth: 0
 
     - name: Determine affected folder
       id: affected-folder
       run: |
-        git remote update
-        git fetch
-        AFFECTED_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u)
-        IMAGE_NAME_FOLDER=$(git diff --name-only origin/main..origin/${{ github.head_ref }} | grep -i 'Dockerfile' | xargs -I {} dirname {} | sort -u | awk -F/ '{print $(NF-0)}')
-        echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_OUTPUT
-        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
-        echo "Affected folders: $AFFECTED_FOLDER"
-        echo "Image name folder: $IMAGE_NAME_FOLDER"
+        git fetch origin main
+        CHANGED_DOCKERFILE=$(git diff --name-only origin/main...HEAD | grep -i 'Dockerfile' | head -1)
 
-        echo "IMAGE_NAME_ARTIFACT=$IMAGE_NAME_FOLDER" > image_name.txt
-
-        if [[ $AFFECTED_FOLDER == '' ]]; then
+        if [[ -z "$CHANGED_DOCKERFILE" ]]; then
           echo "========= No Dockerfile affected on this PR ========="
+          echo "DOCKERFILE_CHANGED=false" >> $GITHUB_OUTPUT
           exit 0
         fi
-    
-    - name: Set Repo Name
-      id: repo-name
-      run: |
-        echo "REPO=natandias1" >> $GITHUB_OUTPUT
-    
-  
+
+        AFFECTED_FOLDER=$(dirname "$CHANGED_DOCKERFILE")
+        IMAGE_NAME_FOLDER=$(basename "$AFFECTED_FOLDER")
+
+        echo "AFFECTED_FOLDER=$AFFECTED_FOLDER" >> $GITHUB_OUTPUT
+        echo "IMAGE_NAME_FOLDER=$IMAGE_NAME_FOLDER" >> $GITHUB_OUTPUT
+        echo "DOCKERFILE_CHANGED=true" >> $GITHUB_OUTPUT
+        echo "Affected folder: $AFFECTED_FOLDER"
+        echo "Image name folder: $IMAGE_NAME_FOLDER"
+
   build-and-push:
     needs: check-dockerfile-changes
-    if: ${{ github.event_name == 'pull_request' && needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER != '' }}
+    if: ${{ needs.check-dockerfile-changes.outputs.dockerfile_changed == 'true' }}
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -64,42 +54,33 @@ jobs:
 
     steps:
     - name: Checkout repo
-      uses: actions/checkout@v3.5.2
+      uses: actions/checkout@v4
 
     - name: Log in to Docker Hub
-      uses: docker/login-action@v2.1.0
+      uses: docker/login-action@v3
       with:
         username: ${{ secrets.DOCKER_USERNAME }}
         password: ${{ secrets.DOCKER_PASSWORD }}
 
-    - name: Set Repo Name
-      id: repo-name
+    - name: Compute Dockerfile hash
+      id: dockerfile-hash
       run: |
-        echo "REPO=natandias1" >> $GITHUB_ENV
+        DOCKERFILE_PATH=$(find "${{ needs.check-dockerfile-changes.outputs.affected_folder }}" -maxdepth 1 -iname 'Dockerfile' | head -1)
+        DOCKERFILE_HASH=$(sha256sum "$DOCKERFILE_PATH" | awk '{print $1}' | cut -c1-12)
+        echo "DOCKERFILE_PATH=$DOCKERFILE_PATH" >> $GITHUB_OUTPUT
+        echo "DOCKERFILE_HASH=$DOCKERFILE_HASH" >> $GITHUB_OUTPUT
+        echo "Dockerfile: $DOCKERFILE_PATH"
+        echo "Hash: $DOCKERFILE_HASH"
 
-    - name: Docker Metadata action
-      id: meta
-      uses: docker/metadata-action@v4.4.0
+    - name: Build and push Docker image
+      uses: docker/build-push-action@v6
       with:
-        images: ${{ env.REPO }}/${{ needs.check-dockerfile-changes.outputs.IMAGE_NAME_FOLDER }}
-        tags: |
-          type=ref,event=branch
-          type=ref,event=pr
-        flavor: |
-          latest=false
-    
-    - name: Build and push Docker images
-      uses: docker/build-push-action@v5.3.0
-      with:
-        file: ${{ needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER }}/Dockerfile
+        file: ${{ steps.dockerfile-hash.outputs.DOCKERFILE_PATH }}
         context: .
-        tags: ${{ steps.meta.outputs.tags }}
-        labels: ${{ steps.meta.outputs.labels }}
-        push: ${{ github.event_name == 'pull_request' }}
-    
-    - name: Check status
-      run: | 
-        echo "Dockerfile check complete"
-        echo "Docker image name: ${{ needs.check-dockerfile-changes.outputs.IMAGE_NAME_FOLDER }}"
-        echo "Affected folders: ${{ needs.check-dockerfile-changes.outputs.AFFECTED_FOLDER }}"
-        echo "Docker image tags: ${{ steps.meta.outputs.tags }}"
+        tags: natandias1/${{ needs.check-dockerfile-changes.outputs.image_name_folder }}:${{ steps.dockerfile-hash.outputs.DOCKERFILE_HASH }}
+        push: true
+
+    - name: Summary
+      run: |
+        echo "Build complete"
+        echo "Image: natandias1/${{ needs.check-dockerfile-changes.outputs.image_name_folder }}:${{ steps.dockerfile-hash.outputs.DOCKERFILE_HASH }}"
