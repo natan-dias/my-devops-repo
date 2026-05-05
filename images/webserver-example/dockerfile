@@ -1,5 +1,7 @@
 FROM nginx:latest
 
+LABEL maintainer="natandias1"
+
 USER root
 
 RUN apt-get update && apt-get install \
