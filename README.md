@@ -67,3 +67,5 @@ ArgoCD Application definitions that sync the `infra/` manifests to the cluster:
 | `docker_hub_tags.py` | Lists Docker Hub image tags for a repository |
 | `python_auto_pr_approve.py` | Approves PRs via GitHub API |
 | `kustomize_build_filters.py` | Utility for Kustomize operations |
+
+See [`documentations/scripts.md`](documentations/scripts.md) for usage examples.
