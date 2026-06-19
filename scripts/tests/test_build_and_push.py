@@ -18,9 +18,13 @@ except ValueError: # Already removed
 
 from build_and_push import build_image, build_and_push_image
 
-mock_run = Mock()
 def test_build_image():
-    build_image('images/webserver-example')
+    with patch('subprocess.run') as mock_run:
+        folder_path = 'images/webserver-example'
+        build_image(folder_path)
+        mock_run.assert_called_once_with(
+            ['docker', 'build', '-t', 'natandias1/webserver-example:latest', folder_path]
+        )
 
 def test_build_and_push_image():
     # Mock the subprocess.run calls
