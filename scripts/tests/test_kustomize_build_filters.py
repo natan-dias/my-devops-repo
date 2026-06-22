@@ -13,7 +13,7 @@ except ValueError:
     pass
 
 import yaml
-from kustomize_build_filters import kustomize_build_filter, DEFAULT_KINDS
+from kustomize_build_filters import kustomize_build_filter, DEFAULT_KINDS, main
 
 SAMPLE_RESOURCE = yaml.dump({
     'apiVersion': 'apps/v1',
@@ -52,3 +52,12 @@ def test_default_kinds_used_when_none_provided():
                 kustomize_build_filter('infra/redis', 'my-app', kinds=None)
                 printed = ' '.join(str(c) for c in mock_print.call_args_list)
                 assert 'my-app' in printed
+
+
+def test_main(capsys):
+    with patch('subprocess.check_output', return_value=SAMPLE_RESOURCE):
+        with patch('sys.argv', ['kustomize_build_filters.py', '--path', 'infra/redis', '--name', 'my-app', '--kind', 'Deployment']):
+            main()
+    out = capsys.readouterr().out
+    assert 'my-app' in out
+    assert 'Deployment' in out

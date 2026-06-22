@@ -16,7 +16,7 @@ try:
 except ValueError: # Already removed
     pass
 
-from build_and_push import build_image, build_and_push_image
+from build_and_push import build_image, build_and_push_image, main
 
 def test_build_image():
     with patch('subprocess.run') as mock_run:
@@ -58,3 +58,22 @@ def test_build_and_push_image():
         mock_run.side_effect = subprocess.CalledProcessError(returncode=1, cmd=expected_push_command)
         with pytest.raises(subprocess.CalledProcessError):
             build_and_push_image(folder_path)
+
+def test_main_missing_argument():
+    with patch('sys.argv', ['build_and_push.py']):
+        with patch('subprocess.run') as mock_run:
+            main()
+            mock_run.assert_not_called()
+
+def test_main_with_argument():
+    folder = 'webserver-example'
+    folder_path = f'/images/{folder}'
+    image_name = f'natandias1/{folder}:latest'
+
+    with patch('sys.argv', ['build_and_push.py', folder]):
+        with patch('subprocess.run') as mock_run:
+            main()
+            mock_run.assert_has_calls([
+                call(['docker', 'build', '-t', image_name, folder_path]),
+                call(['docker', 'push', image_name]),
+            ])

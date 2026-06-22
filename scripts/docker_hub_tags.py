@@ -25,8 +25,7 @@ def get_tags(repository, image_name):
         print(f"Failed to fetch tags: {response.status_code}")
         return []
 
-if __name__ == '__main__':
-
+def main():
     # USAGE
     # python docker-hub-tags.py -r <repository> -i <image_name>
 
@@ -35,8 +34,8 @@ if __name__ == '__main__':
     parser.add_argument('-i', '--image_name', type=str, required=True, help='Image name')
     args = parser.parse_args()
 
-    repository = args.repository
-    image_name = args.image_name
-
-    tags = get_tags(repository, image_name)
+    tags = get_tags(args.repository, args.image_name)
     print(json.dumps(tags, indent=4))
+
+if __name__ == '__main__':
+    main()

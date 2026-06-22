@@ -16,7 +16,7 @@ try:
 except ValueError: # Already removed
     pass
 
-from docker_hub_tags import get_tags
+from docker_hub_tags import get_tags, main
 
 class MockResponse:
     def __init__(self, status_code, json_data=None):
@@ -58,3 +58,15 @@ def test_get_tags_invalid_image():
     # Call the get_tags function with an invalid image name
     with pytest.raises(TypeError):
         get_tags('test_repository', None)
+
+def test_main(mocker):
+    mock_response = MockResponse(200, {'results': [{'name': 'latest', 'tag_status': 'active', 'tag_last_pushed': '2024-01-01T00:00:00.000Z'}]})
+    mocker.patch('requests.get', return_value=mock_response)
+    mock_print = mocker.patch('builtins.print')
+
+    mocker.patch('sys.argv', ['docker_hub_tags.py', '-r', 'natandias1', '-i', 'webserver-example'])
+    main()
+
+    mock_print.assert_called_once()
+    printed = mock_print.call_args[0][0]
+    assert 'latest' in printed
