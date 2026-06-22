@@ -42,18 +42,21 @@ There is still a lot of things to do here, but for now the installation is quite
 
 ### Prerequisites
 
-- Python 3.10 or higher
-- PIP 24.0 or higher
+- Python 3.12 or higher
+- [uv](https://docs.astral.sh/uv/) — install with `brew install uv`
 
-### Requirements
+### Setup
 
-Just install them using:
-
-> pip install -r requirements.txt
+```bash
+# Install dependencies (run from apps/kb-api/)
+uv sync
+```
 
 ### Running
 
-> python main.py
+```bash
+uv run python main.py
+```
 
 This will start a Flask app in localhost which can also be accessible via browser, looking for the `healthcheck` page.
 

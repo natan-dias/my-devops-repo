@@ -14,12 +14,14 @@ jobs:
     name: Test python scripts
     steps:
     - uses: actions/checkout@v4
-    - name: Install requirements
-      run: pip install -r scripts/codecov-requirements.txt
+    - name: Install uv
+      uses: astral-sh/setup-uv@v5
+    - name: Install dependencies
+      run: uv sync --extra dev
+      working-directory: scripts
     - name: Run tests and collect coverage
-      run: |
-        cd scripts
-        pytest --cov . tests/
+      run: uv run python -m pytest --cov . tests/
+      working-directory: scripts
     - name: Upload coverage reports to Codecov
       uses: codecov/codecov-action@v4.0.1
       with:
