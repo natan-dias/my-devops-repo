@@ -27,8 +27,7 @@ def kustomize_build_filter(path, name, kinds=None):
         if kind not in found_kinds:
             print(f"Error: Resource kind '{kind}' not found for name '{name}'")
 
-if __name__ == "__main__":
-
+def main():
     parser = argparse.ArgumentParser()
     parser.add_argument("--path", "-p", type=str, required=True, help="Path to the kustomization file")
     parser.add_argument("--name", "-n", type=str, required=True, help="Name of the resource")
@@ -37,3 +36,6 @@ if __name__ == "__main__":
     args = parser.parse_args()
 
     kustomize_build_filter(args.path, args.name, args.kind)
+
+if __name__ == "__main__":
+    main()

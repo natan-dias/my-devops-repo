@@ -81,3 +81,49 @@ def test_trigger_approval_invalid_token():
 
         # Assert that the result is an error message
         assert result == "invalid token"
+
+
+def _setup_pr_mock(mock_gh, filenames):
+    gh = mock_gh.return_value
+    repo = Mock()
+    pr = Mock()
+    pr.number = 1
+    pr.title = 'Test PR'
+    pr.state = 'open'
+    pr.get_files.return_value = [Mock(filename=f) for f in filenames]
+    repo.get_pull.return_value = pr
+    repo.name = 'my-devops-repo'
+    repo.owner.login = 'natan-dias'
+    gh.get_repo.return_value = repo
+    return gh, pr
+
+
+def test_trigger_approval_file_matches_valid_reviewer(capsys):
+    os.environ['GH_TOKEN'] = 'mock_token'
+    os.environ['GITHUB_REPOSITORY'] = 'natan-dias/my-devops-repo'
+    os.environ['PULL_REQUEST_NUMBER'] = '1'
+
+    with patch('python_auto_pr_approve.Github') as mock_gh:
+        gh, pr = _setup_pr_mock(mock_gh, ['README.md'])
+        gh.get_user.return_value = Mock()
+
+        python_auto_pr_approve.trigger_approval('README.md', ['README.md'])
+
+        pr.create_review_request.assert_called_once_with(reviewers=['natan-bot'])
+        pr.create_review.assert_called_once_with(body='Approved', event='APPROVE')
+
+
+def test_trigger_approval_file_matches_invalid_reviewer(capsys):
+    os.environ['GH_TOKEN'] = 'mock_token'
+    os.environ['GITHUB_REPOSITORY'] = 'natan-dias/my-devops-repo'
+    os.environ['PULL_REQUEST_NUMBER'] = '1'
+
+    with patch('python_auto_pr_approve.Github') as mock_gh:
+        gh, pr = _setup_pr_mock(mock_gh, ['README.md'])
+        gh.get_user.side_effect = Exception("User not found")
+
+        python_auto_pr_approve.trigger_approval('README.md', ['README.md'])
+
+        out = capsys.readouterr().out
+        assert 'Reviewer is not a valid GitHub user' in out
+        pr.create_review.assert_not_called()
