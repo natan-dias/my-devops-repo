@@ -1,0 +1,28 @@
+[project]
+name = "scripts"
+version = "0.1.0"
+requires-python = ">=3.12"
+dependencies = []
+
+[project.optional-dependencies]
+dev = [
+  "attrs",
+  "coverage",
+  "iniconfig",
+  "packaging",
+  "pluggy",
+  "pyparsing",
+  "pytest",
+  "pytest-cov",
+  "tomli",
+  "PyGithub",
+  "pytest-mock",
+  "PyYAML",
+]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["."]
+omit = ["tests/*", "test_*.py"]
